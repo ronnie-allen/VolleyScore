@@ -98,3 +98,8 @@
     @apply scale-110;
   }
 }
+@media (prefers-reduced-motion: reduce) {
+  .score-update-animation {
+    transition: none !important;
+  }
+}
