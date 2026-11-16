@@ -49,14 +49,14 @@ export function EditTeamDialog({ team, open, onOpenChange }: EditTeamDialogProps
 
   useEffect(() => {
     if (team) {
-      form.reset({ name: team.name, members: team.members.join(", ") });
+      form.reset({ name: team.name, members: team.members.join("\n") });
     }
   }, [team, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!team) return;
     const memberList = values.members
-      ? values.members.split(/[\n,]+/).map((m) => m.trim()).filter(Boolean)
+      ? values.members.split(/\r?\n+/).map((m) => m.trim()).filter(Boolean)
       : [];
     updateTeam(team.id, { name: values.name, members: memberList });
     toast({
@@ -96,7 +96,7 @@ export function EditTeamDialog({ team, open, onOpenChange }: EditTeamDialogProps
                   <FormLabel>Team Members</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter member names, separated by commas or new lines"
+                      placeholder="One member name per line"
                       {...field}
                       rows={3}
                     />

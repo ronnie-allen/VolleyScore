@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
 import { useScoreboardStore, STORAGE_KEY } from '@/store/scoreboard-store';
 
 function resetStore() {
@@ -94,5 +94,29 @@ describe('persistence', () => {
     const state = useScoreboardStore.getState();
     expect(state.teams).toHaveLength(1);
     expect(state.teams[0].id).toBe('imported');
+  });
+});
+
+
+describe('storage failure resilience', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    window.localStorage.clear();
+  });
+
+  it('keeps state in memory when localStorage writes throw', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota exceeded', 'QuotaExceededError');
+    });
+    expect(() => useScoreboardStore.getState().addTeam('Alpha', [])).not.toThrow();
+    expect(useScoreboardStore.getState().teams).toHaveLength(1);
+  });
+
+  it('keeps state in memory when localStorage reads throw', () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('denied', 'SecurityError');
+    });
+    expect(() => useScoreboardStore.getState().addTeam('Beta', [])).not.toThrow();
+    expect(useScoreboardStore.getState().teams.some((t) => t.name === 'Beta')).toBe(true);
   });
 });
