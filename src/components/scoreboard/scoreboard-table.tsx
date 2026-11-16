@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import type { DailyScore } from '@/types';
+import type { DailyScoreRow, ScoreField } from '@/types';
 import { useScoreboardStore } from '@/store/scoreboard-store';
 import {
   Table,
@@ -15,26 +15,62 @@ import { Button } from '@/components/ui/button';
 import { MinusCircle, PlusCircle, Users } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-
 interface ScoreboardTableProps {
-  scores: DailyScore[];
+  rows: DailyScoreRow[];
   date: string; // YYYY-MM-DD
 }
 
-export function ScoreboardTable({ scores, date }: ScoreboardTableProps) {
+const FIELD_LABELS: Record<ScoreField, string> = {
+  gamesWon: 'games won',
+  gamesLost: 'games lost',
+  setsWon: 'sets won',
+  setsLost: 'sets lost',
+};
+
+function ScoreCounter({
+  teamName,
+  field,
+  value,
+  onChange,
+}: {
+  teamName: string;
+  field: ScoreField;
+  value: number;
+  onChange: (field: ScoreField, delta: number) => void;
+}) {
+  const label = FIELD_LABELS[field];
+  return (
+    <div className="flex items-center justify-center gap-2">
+      <Button
+        variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
+        onClick={() => onChange(field, -1)}
+        disabled={value <= 0}
+        aria-label={`Decrease ${label} for ${teamName}`}
+      >
+        <MinusCircle className="h-4 w-4" />
+      </Button>
+      <span className="font-mono w-6 text-center" aria-live="polite">{value}</span>
+      <Button
+        variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
+        onClick={() => onChange(field, 1)}
+        aria-label={`Increase ${label} for ${teamName}`}
+      >
+        <PlusCircle className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
+export function ScoreboardTable({ rows, date }: ScoreboardTableProps) {
   const updateScore = useScoreboardStore((state) => state.updateScore);
 
-  const handleScoreChange = (teamId: string, field: keyof Omit<DailyScore, 'id' | 'scoreId' | 'name' | 'members' | 'teamId' | 'date'>, delta: number) => {
-    const currentScore = scores.find(s => s.id === teamId); // Find by team ID here
-    if (!currentScore) return;
-
-    const currentFieldValue = currentScore[field];
-    const newValue = Math.max(0, currentFieldValue + delta); // Ensure score doesn't go below 0
-
-    updateScore(teamId, date, { [field]: newValue });
+  const handleScoreChange = (teamId: string, field: ScoreField, delta: number) => {
+    const row = rows.find((r) => r.team.id === teamId);
+    const currentValue = row?.score?.[field] ?? 0;
+    updateScore(teamId, date, { [field]: Math.max(0, currentValue + delta) });
   };
 
-   if (!scores || scores.length === 0) {
+   if (!rows || rows.length === 0) {
       return <p className="text-muted-foreground text-center mt-8">No teams available for this date. Add teams or select a different date.</p>;
    }
 
@@ -51,96 +87,24 @@ export function ScoreboardTable({ scores, date }: ScoreboardTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {scores.map((score) => (
-            <TableRow key={score.id} className="hover:bg-muted/50">
-              <TableCell className="font-medium flex items-center gap-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                {score.name}
+          {rows.map(({ team, score }) => (
+            <TableRow key={team.id} className="hover:bg-muted/50">
+              <TableCell className="font-medium">
+                <span className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  {team.name}
+                </span>
               </TableCell>
-              {/* Games Won */}
-              <TableCell className="text-center">
-                <div className="flex items-center justify-center gap-2">
-                  <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'gamesWon', -1)}
-                    disabled={score.gamesWon <= 0}
-                    aria-label={`Decrease games won for ${score.name}`}
-                  >
-                    <MinusCircle className="h-4 w-4" />
-                  </Button>
-                  <span className="font-mono w-6 text-center">{score.gamesWon}</span>
-                  <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'gamesWon', 1)}
-                    aria-label={`Increase games won for ${score.name}`}
-                 >
-                    <PlusCircle className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-              {/* Games Lost */}
-              <TableCell className="text-center">
-                 <div className="flex items-center justify-center gap-2">
-                  <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'gamesLost', -1)}
-                    disabled={score.gamesLost <= 0}
-                    aria-label={`Decrease games lost for ${score.name}`}
-                 >
-                    <MinusCircle className="h-4 w-4" />
-                  </Button>
-                  <span className="font-mono w-6 text-center">{score.gamesLost}</span>
-                  <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'gamesLost', 1)}
-                     aria-label={`Increase games lost for ${score.name}`}
-                 >
-                    <PlusCircle className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-               {/* Sets Won */}
-              <TableCell className="text-center">
-                <div className="flex items-center justify-center gap-2">
-                   <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'setsWon', -1)}
-                    disabled={score.setsWon <= 0}
-                    aria-label={`Decrease sets won for ${score.name}`}
-                 >
-                    <MinusCircle className="h-4 w-4" />
-                  </Button>
-                  <span className="font-mono w-6 text-center">{score.setsWon}</span>
-                   <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'setsWon', 1)}
-                    aria-label={`Increase sets won for ${score.name}`}
-                 >
-                    <PlusCircle className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-              {/* Sets Lost */}
-              <TableCell className="text-center">
-                 <div className="flex items-center justify-center gap-2">
-                  <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'setsLost', -1)}
-                    disabled={score.setsLost <= 0}
-                    aria-label={`Decrease sets lost for ${score.name}`}
-                 >
-                    <MinusCircle className="h-4 w-4" />
-                  </Button>
-                  <span className="font-mono w-6 text-center">{score.setsLost}</span>
-                   <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground score-update-animation"
-                    onClick={() => handleScoreChange(score.id, 'setsLost', 1)}
-                     aria-label={`Increase sets lost for ${score.name}`}
-                 >
-                    <PlusCircle className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
+              {(['gamesWon', 'gamesLost', 'setsWon', 'setsLost'] as ScoreField[]).map((field) => (
+                <TableCell key={field} className="text-center">
+                  <ScoreCounter
+                    teamName={team.name}
+                    field={field}
+                    value={score?.[field] ?? 0}
+                    onChange={(f, delta) => handleScoreChange(team.id, f, delta)}
+                  />
+                </TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>

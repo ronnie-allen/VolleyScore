@@ -1,26 +1,33 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useScoreboardStore } from '@/store/scoreboard-store';
 import { DatePicker } from '@/components/scoreboard/date-picker';
 import { ScoreboardTable } from '@/components/scoreboard/scoreboard-table';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { format } from 'date-fns';
+import { useHydrated } from '@/hooks/use-hydrated';
+import { buildDailyRows } from '@/lib/scoreboard';
+import { formatISODateForDisplay, parseISODateLocal } from '@/lib/date';
 
 export function Scoreboard() {
+  const hydrated = useHydrated();
+  const teams = useScoreboardStore((state) => state.teams);
+  const scores = useScoreboardStore((state) => state.scores);
   const selectedDate = useScoreboardStore((state) => state.selectedDate);
   const setSelectedDate = useScoreboardStore((state) => state.setSelectedDate);
-  const scoresForSelectedDate = useScoreboardStore((state) => state.getScoresForDate(state.selectedDate));
 
-  // Handle date selection from DatePicker
+  const rows = useMemo(
+    () => buildDailyRows(teams, scores, selectedDate),
+    [teams, scores, selectedDate]
+  );
+
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       setSelectedDate(date);
     }
   };
 
-  // Format date for display
-  const formattedDate = selectedDate ? format(new Date(selectedDate), 'PPP') : 'Select a date'; // e.g., Oct 26, 2023
+  const formattedDate = selectedDate ? formatISODateForDisplay(selectedDate) : 'Select a date';
 
   return (
     <Card className="h-full flex flex-col">
@@ -31,13 +38,17 @@ export function Scoreboard() {
                     <CardDescription>Scores for {formattedDate}</CardDescription>
                 </div>
                 <DatePicker
-                    selectedDate={selectedDate ? new Date(selectedDate) : undefined}
+                    selectedDate={selectedDate ? parseISODateLocal(selectedDate) : undefined}
                     onDateSelect={handleDateSelect}
                 />
             </div>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden">
-             <ScoreboardTable scores={scoresForSelectedDate} date={selectedDate} />
+             {hydrated ? (
+               <ScoreboardTable rows={rows} date={selectedDate} />
+             ) : (
+               <p className="text-muted-foreground text-center mt-8">Loading scoreboard…</p>
+             )}
         </CardContent>
     </Card>
   );

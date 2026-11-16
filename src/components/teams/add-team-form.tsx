@@ -19,10 +19,10 @@ import { useToast } from "@/hooks/use-toast";
 import { PlusCircle } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
+  name: z.string().trim().min(2, {
     message: "Team name must be at least 2 characters.",
-  }),
-  members: z.string().optional(), // Optional for simplicity, could be refined
+  }).max(100),
+  members: z.string().max(2000).optional(),
 });
 
 export function AddTeamForm() {
