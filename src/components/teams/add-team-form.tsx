@@ -82,7 +82,7 @@ export function AddTeamForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full h-11 section-title not-italic text-base tracking-widest shadow-[0_0_24px_hsl(20_100%_56%/0.35)]">
           <PlusCircle className="mr-2 h-4 w-4" /> Add Team
         </Button>
       </form>

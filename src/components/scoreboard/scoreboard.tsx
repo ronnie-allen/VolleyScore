@@ -4,7 +4,6 @@ import React, { useMemo } from 'react';
 import { useScoreboardStore } from '@/store/scoreboard-store';
 import { DatePicker } from '@/components/scoreboard/date-picker';
 import { ScoreboardTable } from '@/components/scoreboard/scoreboard-table';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useHydrated } from '@/hooks/use-hydrated';
 import { buildDailyRows } from '@/lib/scoreboard';
 import { formatISODateForDisplay, parseISODateLocal } from '@/lib/date';
@@ -30,26 +29,30 @@ export function Scoreboard() {
   const formattedDate = selectedDate ? formatISODateForDisplay(selectedDate) : 'Select a date';
 
   return (
-    <Card className="h-full flex flex-col">
-        <CardHeader>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <CardTitle className="text-2xl">Scoreboard</CardTitle>
-                    <CardDescription>Scores for {formattedDate}</CardDescription>
-                </div>
-                <DatePicker
-                    selectedDate={selectedDate ? parseISODateLocal(selectedDate) : undefined}
-                    onDateSelect={handleDateSelect}
-                />
+    <section
+      aria-label={`Matchup board for ${formattedDate}`}
+      className="matchup-board h-full flex flex-col rounded-xl overflow-hidden"
+    >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border px-6 pt-5 pb-4">
+            <div>
+                <p className="text-[11px] uppercase tracking-[0.25em] text-primary font-semibold">Matchup Board</p>
+                <h1 className="section-title text-3xl leading-none mt-1 text-foreground">
+                  Scoreboard
+                </h1>
+                <p className="text-sm text-muted-foreground mt-1">{formattedDate}</p>
             </div>
-        </CardHeader>
-        <CardContent className="flex-1 overflow-hidden">
+            <DatePicker
+                selectedDate={selectedDate ? parseISODateLocal(selectedDate) : undefined}
+                onDateSelect={handleDateSelect}
+            />
+        </div>
+        <div className="flex-1 overflow-hidden">
              {hydrated ? (
                <ScoreboardTable rows={rows} date={selectedDate} />
              ) : (
-               <p className="text-muted-foreground text-center mt-8">Loading scoreboard…</p>
+               <p className="text-muted-foreground text-center mt-10">Loading scoreboard…</p>
              )}
-        </CardContent>
-    </Card>
+        </div>
+    </section>
   );
 }

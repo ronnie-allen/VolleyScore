@@ -4,78 +4,76 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%; /* Dark Blue/Black Text */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 182 31% 34%; /* Teal */
-    --primary-foreground: 180 50% 95%; /* Light Cyan/White */
-    --secondary: 182 31% 25%; /* Darker Teal */
-    --secondary-foreground: 180 50% 95%;
-    --muted: 0 0% 96.1%; /* Light Gray */
-    --muted-foreground: 222 47% 40%; /* Muted Dark Blue */
-    --accent: 0 0% 85%; /* Light Gray */
-    --accent-foreground: 222 47% 11%; /* Dark Blue/Black Text */
-    --destructive: 0 84.2% 60.2%;
+    --background: 226 45% 6%;
+    --foreground: 36 30% 96%;
+    --card: 226 38% 12%;
+    --card-foreground: 36 30% 96%;
+    --popover: 226 42% 9%;
+    --popover-foreground: 36 30% 96%;
+    --primary: 20 100% 56%;
+    --primary-foreground: 226 45% 8%;
+    --secondary: 225 32% 18%;
+    --secondary-foreground: 36 30% 96%;
+    --muted: 225 30% 15%;
+    --muted-foreground: 220 16% 68%;
+    --accent: 20 100% 56%;
+    --accent-foreground: 226 45% 8%;
+    --destructive: 0 72% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 182 31% 45%; /* Lighter Teal for focus */
-    --chart-1: 182 31% 34%;
-    --chart-2: 182 31% 25%;
-    --chart-3: 0 0% 85%;
-    --chart-4: 222 47% 11%;
-    --chart-5: 210 40% 60%;
-    --radius: 0.5rem;
+    --border: 225 25% 19%;
+    --input: 225 25% 19%;
+    --ring: 20 100% 58%;
+    --chart-1: 20 100% 56%;
+    --chart-2: 225 32% 40%;
+    --chart-3: 45 100% 55%;
+    --chart-4: 226 45% 30%;
+    --chart-5: 205 90% 55%;
+    --radius: 0.625rem;
 
-    /* Sidebar specific vars (can be same as root or customized) */
-    --sidebar-background: 222 47% 11%; /* Dark Blue */
-    --sidebar-foreground: 0 0% 98%; /* Light Gray/White */
-    --sidebar-primary: 182 31% 34%; /* Teal */
-    --sidebar-primary-foreground: 180 50% 95%; /* Light Cyan/White */
-    --sidebar-accent: 222 47% 15%; /* Slightly Lighter Dark Blue */
-    --sidebar-accent-foreground: 0 0% 98%; /* Light Gray/White */
-    --sidebar-border: 222 47% 25%; /* Subtle border color */
-    --sidebar-ring: 182 31% 45%; /* Lighter Teal for focus */
+    --sidebar-background: 226 45% 7%;
+    --sidebar-foreground: 36 30% 96%;
+    --sidebar-primary: 20 100% 56%;
+    --sidebar-primary-foreground: 226 45% 8%;
+    --sidebar-accent: 225 32% 16%;
+    --sidebar-accent-foreground: 36 30% 96%;
+    --sidebar-border: 225 25% 19%;
+    --sidebar-ring: 20 100% 58%;
   }
 
   .dark {
-    --background: 222 47% 11%; /* Dark Blue */
-    --foreground: 0 0% 98%; /* Light Gray/White */
-    --card: 222 47% 15%; /* Slightly Lighter Dark Blue */
-    --card-foreground: 0 0% 98%;
-    --popover: 222 47% 10%; /* Darker than background */
-    --popover-foreground: 0 0% 98%;
-    --primary: 182 31% 34%; /* Teal */
-    --primary-foreground: 180 50% 95%; /* Light Cyan/White */
-    --secondary: 182 31% 25%; /* Darker Teal */
-    --secondary-foreground: 180 50% 95%;
-    --muted: 222 47% 20%; /* Muted Dark Blue */
-    --muted-foreground: 210 40% 60%; /* Muted Gray */
-    --accent: 0 0% 85%; /* Light Gray */
-    --accent-foreground: 222 47% 11%; /* Dark Blue/Black Text */
-    --destructive: 0 62.8% 30.6%;
+    --background: 226 45% 6%;
+    --foreground: 36 30% 96%;
+    --card: 226 38% 12%;
+    --card-foreground: 36 30% 96%;
+    --popover: 226 42% 9%;
+    --popover-foreground: 36 30% 96%;
+    --primary: 20 100% 56%;
+    --primary-foreground: 226 45% 8%;
+    --secondary: 225 32% 18%;
+    --secondary-foreground: 36 30% 96%;
+    --muted: 225 30% 15%;
+    --muted-foreground: 220 16% 68%;
+    --accent: 20 100% 56%;
+    --accent-foreground: 226 45% 8%;
+    --destructive: 0 72% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 222 47% 25%; /* Subtle border color */
-    --input: 222 47% 25%;
-    --ring: 182 31% 45%; /* Lighter Teal for focus */
-    --chart-1: 182 31% 34%;
-    --chart-2: 182 31% 25%;
-    --chart-3: 0 0% 85%;
-    --chart-4: 222 47% 11%;
-    --chart-5: 210 40% 60%;
+    --border: 225 25% 19%;
+    --input: 225 25% 19%;
+    --ring: 20 100% 58%;
+    --chart-1: 20 100% 56%;
+    --chart-2: 225 32% 40%;
+    --chart-3: 45 100% 55%;
+    --chart-4: 226 45% 30%;
+    --chart-5: 205 90% 55%;
 
-    /* Sidebar specific vars (can be same as root or customized) */
-    --sidebar-background: 222 47% 11%; /* Dark Blue */
-    --sidebar-foreground: 0 0% 98%; /* Light Gray/White */
-    --sidebar-primary: 182 31% 34%; /* Teal */
-    --sidebar-primary-foreground: 180 50% 95%; /* Light Cyan/White */
-    --sidebar-accent: 222 47% 15%; /* Slightly Lighter Dark Blue */
-    --sidebar-accent-foreground: 0 0% 98%; /* Light Gray/White */
-    --sidebar-border: 222 47% 25%; /* Subtle border color */
-    --sidebar-ring: 182 31% 45%; /* Lighter Teal for focus */
+    --sidebar-background: 226 45% 7%;
+    --sidebar-foreground: 36 30% 96%;
+    --sidebar-primary: 20 100% 56%;
+    --sidebar-primary-foreground: 226 45% 8%;
+    --sidebar-accent: 225 32% 16%;
+    --sidebar-accent-foreground: 36 30% 96%;
+    --sidebar-border: 225 25% 19%;
+    --sidebar-ring: 20 100% 58%;
   }
 }
 
@@ -86,20 +84,123 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(20 100% 56% / 0.14), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 110%, hsl(226 80% 40% / 0.25), transparent);
+    background-attachment: fixed;
   }
 }
 
-/* Subtle animation for score updates - applied to elements containing scores */
 @layer components {
+  /* Display typography for numerals and section titles */
+  .num {
+    font-family: var(--font-condensed), system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .section-title {
+    font-family: var(--font-condensed), system-ui, sans-serif;
+    font-style: italic;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Court-lines texture panel */
+  .court-texture {
+    background-image:
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0 22px,
+        hsl(36 30% 96% / 0.025) 22px 23px
+      ),
+      radial-gradient(circle at 50% 0%, hsl(20 100% 56% / 0.10), transparent 60%),
+      linear-gradient(180deg, hsl(226 40% 13%), hsl(226 42% 9%));
+  }
+
+  /* Scoreboard panel: broadcast matchup-board chrome */
+  .matchup-board {
+    position: relative;
+    border: 1px solid hsl(225 25% 22%);
+    background-color: hsl(226 42% 9%);
+    background-image:
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0 26px,
+        hsl(36 30% 96% / 0.02) 26px 27px
+      );
+    box-shadow:
+      inset 0 1px 0 hsl(36 30% 96% / 0.06),
+      0 24px 60px -24px rgb(0 0 0 / 0.8);
+  }
+  .matchup-board::before {
+    /* Orange ticker stripe along the top edge */
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, hsl(20 100% 56%) 0 38%, hsl(45 100% 55%) 38% 46%, transparent 46% 100%);
+  }
+
+  /* Team row inside the board */
+  .matchup-row {
+    transition: background-color 150ms ease;
+  }
+  .matchup-row:hover {
+    background-color: hsl(20 100% 56% / 0.06);
+  }
+
+  /* Chunky counter pads */
+  .counter-pad {
+    border: 1px solid hsl(225 25% 26%);
+    background: linear-gradient(180deg, hsl(225 32% 20%), hsl(226 40% 13%));
+    box-shadow: 0 2px 0 hsl(226 45% 4%);
+    transition: border-color 150ms ease, transform 100ms ease, box-shadow 100ms ease, background-color 150ms ease;
+  }
+  .counter-pad:hover:not(:disabled) {
+    border-color: hsl(20 100% 56% / 0.65);
+    color: hsl(20 100% 65%);
+  }
+  .counter-pad:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: none;
+  }
+
+  /* Orange glow underline flourish */
+  .glow-underline {
+    background-image: linear-gradient(90deg, hsl(20 100% 56%), hsl(45 100% 55%));
+    background-repeat: no-repeat;
+    background-size: 100% 3px;
+    background-position: 0 100%;
+  }
+
+  /* Leader row in standings */
+  .leader-glow {
+    box-shadow: inset 3px 0 0 hsl(20 100% 56%);
+    background: linear-gradient(90deg, hsl(20 100% 56% / 0.14), transparent 55%);
+  }
+
+  .winbar-track {
+    background: hsl(225 30% 18%);
+  }
+  .winbar-fill {
+    background: linear-gradient(90deg, hsl(20 100% 56%), hsl(45 100% 55%));
+  }
+
   .score-update-animation {
     @apply transition-transform duration-300 ease-in-out;
   }
-  .score-update-animation:active { /* Or trigger class */
+  .score-update-animation:active {
     @apply scale-110;
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .score-update-animation {
+  .score-update-animation,
+  .counter-pad,
+  .matchup-row {
     transition: none !important;
   }
 }
