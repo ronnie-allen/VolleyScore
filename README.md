@@ -15,6 +15,8 @@ browser's `localStorage` — no backend or account required.
 ## Requirements
 
 - Node.js >= 20
+- For desktop packaging: Linux (AppImage/deb build natively) or Windows (NSIS build).
+  Local Windows builds on Linux are not supported — use the CI desktop job.
 
 ## Getting started
 
@@ -29,7 +31,11 @@ npm run dev        # http://localhost:9002
 | ------------------- | ------------------------------------ |
 | `npm run dev`       | Start the dev server (port 9002)     |
 | `npm run build`     | Production build                     |
-| `npm start`         | Serve the production build           |
+| `npm run preview`   | Serve the static `out/` build locally |
+| `npm run dist`      | Build all desktop installers (local) |
+| `npm run dist:linux`| Linux AppImage + deb                  |
+| `npm run dist:win`  | Windows NSIS installer (run on Windows)|
+| `npm run electron`  | Build + launch the Electron app       |
 | `npm run typecheck` | `tsc --noEmit`                       |
 | `npm run lint`      | ESLint (flat config)                 |
 | `npm test`          | Vitest unit/component tests          |
@@ -37,9 +43,10 @@ npm run dev        # http://localhost:9002
 
 ## Architecture
 
-- **Framework**: Next.js 16 (App Router) + React 19 + TypeScript (strict)
+- **Framework**: Next.js 16 (App Router) + React 19 + TypeScript (strict), static export (`output: 'export'`)
 - **UI**: Tailwind CSS + shadcn/ui (Radix primitives)
 - **State**: zustand with `persist` → `localStorage` key `volleytracker-storage`, schema version 1
+- **Desktop**: Electron (`electron/main.cjs`, custom `volleytracker://` protocol + `out/` static export) + electron-builder
 - **Validation**: zod (forms via react-hook-form, import parsing)
 - **Tests**: Vitest + Testing Library (jsdom)
 
@@ -69,6 +76,27 @@ Date handling (`src/lib/date.ts`) always uses **local** calendar dates — never
 
 GitHub Actions (`.github/workflows/ci.yml`): install → typecheck → lint → test → build on every push and PR.
 
+## Desktop app (Linux & Windows)
+
+VolleyTracker ships as native installers built with **Electron + electron-builder**
+(the renderer is the same static site; Electron shell provides a standalone window).
+
+```bash
+npm ci
+npm run dist:linux   # → dist/VolleyTracker-1.0.0.AppImage  (chmod +x to run)
+                     # → dist/volleytracker_1.0.0_amd64.deb  (sudo dpkg -i …)
+npm run dist:win     # run on Windows → dist/VolleyTracker Setup 1.0.0.exe
+npm run electron     # build + open the app locally (needs a display)
+```
+
+- **Data** persists in the app's localStorage, same as the web build — export/import works as usual.
+- **Icons** are generated from `build/icon.svg` via `npm run build:icons`.
+- Windows installers are **unsigned** — first run shows SmartScreen → "More info" → "Run anyway".
+  Code-signing requires a purchased certificate and is intentionally out of scope.
+- Building Windows installers **on Linux is not supported** (NSIS uninstaller step needs Wine);
+  the CI `desktop` job builds the NSIS installer on `windows-latest` and the AppImage/deb on
+  `ubuntu-latest`, uploading both as workflow artifacts on every push/PR (see `.github/workflows/ci.yml`).
+
 ## Deployment (Vercel, zero-config)
 
 The app is a fully static Next.js site (all routes are prerendered) with no environment
@@ -80,10 +108,10 @@ variables, no database, and no server-side secrets — hosting is entirely optio
 3. Deploy. Every push to the default branch redeploys automatically; pull requests get preview URLs.
 
 No configuration files, build overrides, or environment variables are required.
-Alternatively, self-host with `npm ci && npm run build && npm start` (Node >= 20).
+Alternatively, self-host with `npm ci && npm run build && npm run preview` (Node >= 20).
 
 Note: persisted browser data (`localStorage`) is per-origin — exporting a JSON backup
-before switching domains is recommended.
+before switching domains or machines is recommended.
 
 ## Security posture
 

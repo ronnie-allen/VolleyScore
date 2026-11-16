@@ -30,3 +30,44 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  desktop:
+    needs: build-test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: "--linux AppImage deb"
+            artifacts: |
+              dist/*.AppImage
+              dist/*.deb
+            name: volleytracker-linux
+          - os: windows-latest
+            target: "--win nsis"
+            artifacts: dist/*.exe
+            name: volleytracker-windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Build installers
+        run: npx electron-builder ${{ matrix.target }}
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.artifacts }}
+          retention-days: 30
