@@ -14,7 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VolleyTracker",
+  title: {
+    default: "VolleyTracker",
+    template: "%s | VolleyTracker",
+  },
   description: "Track your volleyball scores with ease",
 };
 

@@ -19,10 +19,10 @@ import { useToast } from "@/hooks/use-toast";
 import { PlusCircle } from "lucide-react";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
+  name: z.string().trim().min(2, {
     message: "Team name must be at least 2 characters.",
-  }),
-  members: z.string().optional(), // Optional for simplicity, could be refined
+  }).max(100),
+  members: z.string().max(2000).optional(),
 });
 
 export function AddTeamForm() {
@@ -39,7 +39,7 @@ export function AddTeamForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const memberList = values.members
-      ? values.members.split(/[\n,]+/).map((m) => m.trim()).filter(Boolean)
+      ? values.members.split(/\r?\n+/).map((m) => m.trim()).filter(Boolean)
       : [];
     const newTeam = addTeam(values.name, memberList);
     toast({
@@ -73,7 +73,7 @@ export function AddTeamForm() {
               <FormLabel>Team Members (Optional)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Enter member names, separated by commas or new lines"
+                  placeholder="One member name per line (commas inside names are preserved)"
                   {...field}
                   rows={3}
                 />

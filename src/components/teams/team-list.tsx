@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useScoreboardStore } from "@/store/scoreboard-store";
 import { Button } from "@/components/ui/button";
-import { Trash2, Users } from "lucide-react";
+import { Pencil, Trash2, Users } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,12 +16,17 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useHydrated } from "@/hooks/use-hydrated";
+import { EditTeamDialog } from "@/components/teams/edit-team-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Team } from "@/types";
 
 export function TeamList() {
+  const hydrated = useHydrated();
   const teams = useScoreboardStore((state) => state.teams);
   const deleteTeam = useScoreboardStore((state) => state.deleteTeam);
   const { toast } = useToast();
+  const [editingTeam, setEditingTeam] = useState<Team | null>(null);
 
   const handleDelete = (teamId: string, teamName: string) => {
     deleteTeam(teamId);
@@ -31,48 +37,78 @@ export function TeamList() {
     });
   };
 
+  if (!hydrated) {
+    return <p className="text-muted-foreground text-center">Loading teams…</p>;
+  }
+
   if (!teams || teams.length === 0) {
     return <p className="text-muted-foreground text-center">No teams added yet.</p>;
   }
 
   return (
-    <ScrollArea className="h-[calc(100vh-400px)] pr-4"> {/* Adjust height as needed */}
+    <>
+    <ScrollArea className="h-[calc(100vh-400px)] min-h-48 pr-4">
       <ul className="space-y-3">
         {teams.map((team) => (
-          <li key={team.id} className="flex items-center justify-between p-3 bg-secondary rounded-md shadow-sm">
-            <div className="flex items-center gap-3">
-               <Users className="h-5 w-5 text-secondary-foreground" />
-               <span className="font-medium text-secondary-foreground">{team.name}</span>
+          <li key={team.id} className="flex items-center justify-between gap-2 p-3 bg-secondary rounded-md shadow-sm">
+            <div className="flex items-center gap-3 min-w-0">
+               <Users className="h-5 w-5 shrink-0 text-secondary-foreground" />
+               <div className="min-w-0">
+                 <span className="font-medium text-secondary-foreground block truncate">{team.name}</span>
+                 {team.members.length > 0 && (
+                   <span className="text-xs text-secondary-foreground/70 block truncate">
+                     {team.members.join(", ")}
+                   </span>
+                 )}
+               </div>
             </div>
 
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 h-8 w-8">
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Delete team {team.name}</span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the team "{team.name}" and all associated score data.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => handleDelete(team.id, team.name)}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <div className="flex items-center gap-1 shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-secondary-foreground hover:bg-secondary-foreground/10"
+                onClick={() => setEditingTeam(team)}
+              >
+                <Pencil className="h-4 w-4" />
+                <span className="sr-only">Edit team {team.name}</span>
+              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 h-8 w-8">
+                    <Trash2 className="h-4 w-4" />
+                    <span className="sr-only">Delete team {team.name}</span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete the team &quot;{team.name}&quot; and all associated score data.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDelete(team.id, team.name)}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </li>
         ))}
       </ul>
     </ScrollArea>
+    <EditTeamDialog
+      team={editingTeam}
+      open={editingTeam !== null}
+      onOpenChange={(open) => { if (!open) setEditingTeam(null); }}
+    />
+    </>
   );
 }
