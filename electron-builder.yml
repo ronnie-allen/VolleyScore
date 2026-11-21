@@ -1,0 +1,34 @@
+appId: com.volleytracker.app
+productName: VolleyTracker
+copyright: Copyright © 2026 VolleyTracker
+
+files:
+  - out/**
+  - electron/**
+  - package.json
+  # Static export — the renderer needs no Node dependencies at runtime.
+  - '!**/node_modules/**'
+
+directories:
+  output: dist
+  buildResources: build
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Game
+  icon: build/icon.png
+  syncDesktopName: true
+
+win:
+  target:
+    - nsis
+  icon: build/icon.ico
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  shortcutName: VolleyTracker

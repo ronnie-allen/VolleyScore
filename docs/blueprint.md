@@ -13,14 +13,17 @@ data persisted in the browser (`localStorage`). Ships as a static Next.js site.
 - **Export / import** — dated JSON snapshot; zod-validated import that drops orphaned
   scores and duplicate ids, confirms before replacing, and auto-downloads a backup of
   current data first.
+- **Desktop packaging** — native Linux (AppImage, .deb) and Windows (NSIS) installers via
+  Electron + electron-builder; static export rendered in-app over a custom `volleytracker://` scheme.
 
 ## Style
-- Dark theme by default (deep navy `#0d1321`-family background, teal primary `#3c6e71`-family,
-  light accents). CSS variables in `src/app/globals.css` allow a light theme later.
+- "Modern broadcast sports" design system: deep-navy gradients, electric-orange primary,
+  hairline borders, condensed italic display type (Barlow Condensed) with tabular numerals,
+  Inter for UI text, slanted ticker stripe, diagonal court-lines texture.
+- "Matchup board" layout: left column roster cards, right column oversized score rows.
+- Standings #1 gets LEADER badge + win% bar; accent glows on primary actions.
 - Volleyball-themed icons (lucide `Volleyball`, `Users`).
-- Clean sections: left column team management, right column scoreboard.
-- Subtle motion on score buttons (`score-update-animation`), disabled under
-  `prefers-reduced-motion`.
+- Dark-only theme; motion respects `prefers-reduced-motion`.
 
 ## Architecture
 - Next.js 16 (App Router) + React 19 + TypeScript strict.

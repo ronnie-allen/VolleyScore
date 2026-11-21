@@ -42,22 +42,32 @@ export function TeamList() {
   }
 
   if (!teams || teams.length === 0) {
-    return <p className="text-muted-foreground text-center">No teams added yet.</p>;
+    return (
+      <p className="text-muted-foreground text-center italic">
+        No teams yet — sign the first roster above and hit the court.
+      </p>
+    );
   }
 
   return (
     <>
-    <ScrollArea className="h-[calc(100vh-400px)] min-h-48 pr-4">
-      <ul className="space-y-3">
-        {teams.map((team) => (
-          <li key={team.id} className="flex items-center justify-between gap-2 p-3 bg-secondary rounded-md shadow-sm">
+    <ScrollArea className="h-[calc(100vh-430px)] min-h-48 pr-3">
+      <ul className="space-y-2">
+        {teams.map((team, index) => (
+          <li
+            key={team.id}
+            className="group flex items-center justify-between gap-2 rounded-lg border border-border bg-secondary/40 p-3 transition-colors hover:border-primary/40 hover:bg-secondary"
+          >
             <div className="flex items-center gap-3 min-w-0">
-               <Users className="h-5 w-5 shrink-0 text-secondary-foreground" />
+               <span className="num text-xs text-muted-foreground/70 w-5">{String(index + 1).padStart(2, '0')}</span>
+               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
+                 <Users className="h-5 w-5" />
+               </span>
                <div className="min-w-0">
-                 <span className="font-medium text-secondary-foreground block truncate">{team.name}</span>
+                 <span className="section-title not-italic block truncate text-base text-foreground">{team.name}</span>
                  {team.members.length > 0 && (
-                   <span className="text-xs text-secondary-foreground/70 block truncate">
-                     {team.members.join(", ")}
+                   <span className="text-[11px] uppercase tracking-wider text-muted-foreground block truncate">
+                     {team.members.join(" · ")}
                    </span>
                  )}
                </div>
@@ -67,7 +77,7 @@ export function TeamList() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-secondary-foreground hover:bg-secondary-foreground/10"
+                className="h-8 w-8 text-muted-foreground hover:bg-primary/10 hover:text-primary"
                 onClick={() => setEditingTeam(team)}
               >
                 <Pencil className="h-4 w-4" />
@@ -76,14 +86,14 @@ export function TeamList() {
 
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 h-8 w-8">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:bg-destructive/10 hover:text-destructive">
                     <Trash2 className="h-4 w-4" />
                     <span className="sr-only">Delete team {team.name}</span>
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogTitle>Cut {team.name} from the roster?</AlertDialogTitle>
                     <AlertDialogDescription>
                       This action cannot be undone. This will permanently delete the team &quot;{team.name}&quot; and all associated score data.
                     </AlertDialogDescription>

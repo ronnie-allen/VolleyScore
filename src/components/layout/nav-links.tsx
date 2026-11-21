@@ -15,7 +15,7 @@ export function NavLinks() {
 
   return (
     <nav aria-label="Main navigation">
-      <ul className="flex items-center gap-1">
+      <ul className="flex items-center gap-1 rounded-md border border-border bg-secondary/50 p-1">
         {links.map(({ href, label }) => {
           const active = pathname === href;
           return (
@@ -24,8 +24,8 @@ export function NavLinks() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-md px-2 sm:px-3 py-2 text-sm font-medium transition-colors hover:bg-primary-foreground/10",
-                  active && "bg-primary-foreground/15 underline underline-offset-4"
+                  "section-title rounded px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground",
+                  active && "bg-primary text-primary-foreground shadow-[0_0_18px_hsl(20_100%_56%/0.35)] hover:text-primary-foreground"
                 )}
               >
                 {label}

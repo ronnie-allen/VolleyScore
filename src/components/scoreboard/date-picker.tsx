@@ -26,7 +26,7 @@ export function DatePicker({ selectedDate, onDateSelect, className }: DatePicker
         <Button
           variant={"outline"}
           className={cn(
-            "w-[280px] justify-start text-left font-normal",
+            "w-[260px] justify-start text-left border-border bg-secondary/60 hover:bg-secondary font-medium",
             !selectedDate && "text-muted-foreground",
             className
           )}
